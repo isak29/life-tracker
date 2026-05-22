@@ -12,7 +12,7 @@ DevLog is a personal developer portfolio and knowledge base. Instead of forgetti
 - *"What did I work on in 2026?"*
 - *"How does the sensor pipeline in the car project work?"*
 - *"What AWS services have I used?"*
-- *"Summarize everything I've done at Knightec"*
+- *"Summarize everything I've done/built the last year"*
 
 ---
 
@@ -274,20 +274,6 @@ The app is deployed to AWS in the **eu-north-1 (Stockholm)** region.
 - [ ] Tags and filtering
 - [ ] Search functionality
 - [ ] Custom domain
-
----
-
-## 🔐 Environment Variables
-
-Never commit these. Store in `.env` locally and in GitHub Secrets for CI/CD.
-
-```
-AI_API_KEY=your_api_key
-AWS_ACCESS_KEY_ID=your_key
-AWS_SECRET_ACCESS_KEY=your_secret
-AWS_REGION=eu-north-1
-DYNAMODB_TABLE=devlog-entries
-```
 
 ---
 
