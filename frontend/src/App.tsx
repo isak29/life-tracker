@@ -1,12 +1,42 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import "./App.css";
+
+type Message = { role: "ai" | "user"; text: string };
+
+const INITIAL_MESSAGES: Message[] = [
+  { role: "ai", text: "Tjena, vad kan jag hjälpa dig med?" },
+];
 
 export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [chatSize, setChatSize] = useState({ width: 380, height: 480 });
+  const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
+  const [input, setInput] = useState("");
+  const chatEndRef = useRef<HTMLDivElement>(null);
   const isResizing = useRef(false);
   const startPos = useRef({ x: 0, y: 0 });
   const startSize = useRef({ width: 380, height: 480 });
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const sendMessage = () => {
+    const text = input.trim();
+    if (!text) return;
+    setMessages((prev) => [...prev, { role: "user", text }]);
+    setInput("");
+    setTimeout(() => {
+      setMessages((prev) => [
+        ...prev,
+        { role: "ai", text: "Jag förstår! Det här är ett mock-svar — riktig AI kommer snart." },
+      ]);
+    }, 600);
+  };
+
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") sendMessage();
+  };
 
   const onResizeStart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -70,28 +100,24 @@ export default function App() {
             </div>
 
             <div className="chat-area">
-              <div className="msg ai">
-                <div className="msg-label">DevLog AI</div>
-                <div className="msg-bubble">
-                  Hey! Ask me anything about your work history.
+              {messages.map((msg, i) => (
+                <div key={i} className={`msg ${msg.role}`}>
+                  {msg.role === "ai" && <div className="msg-label">DevLog AI</div>}
+                  <div className="msg-bubble">{msg.text}</div>
                 </div>
-              </div>
-              <div className="msg user">
-                <div className="msg-bubble">
-                  What did I work on at Knightec in August 2026?
-                </div>
-              </div>
-              <div className="msg ai">
-                <div className="msg-label">DevLog AI</div>
-                <div className="msg-bubble">
-                  In August 2026 at Knightec you worked on a real-time sensor pipeline and an auth service refactor.
-                </div>
-              </div>
+              ))}
+              <div ref={chatEndRef} />
             </div>
 
             <div className="chat-input-row">
-              <input className="chat-input" placeholder="Ask about your work history..." />
-              <button className="send-btn">→</button>
+              <input
+                className="chat-input"
+                placeholder="Skriv ett meddelande..."
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={onKeyDown}
+              />
+              <button className="send-btn" onClick={sendMessage}>→</button>
             </div>
 
             <div className="resize-handle" onMouseDown={onResizeStart} />
